@@ -1,11 +1,26 @@
 
 #include "../include/main.hpp"
 
-int main(int argc, char *argv[]) {
-  InitWindow(800, 800, "Raylib");
-  SetTargetFPS(60);
+const int tile_size = 50;
 
-  Entity player(250, 250, 50, 50, pink);
+int main(int argc, char *argv[]) {
+  std::vector<std::vector<char>> map = {
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
+    { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+    { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+  };
+  Entity player(250, 250, tile_size / 2, tile_size / 2, pink);
+
+  InitWindow(map[0].size() * tile_size, map.size() * tile_size, "Raylib");
+  SetTargetFPS(60);
 
   bool is_running = true;
   while (WindowShouldClose() == false && is_running) {
@@ -27,12 +42,13 @@ int main(int argc, char *argv[]) {
     }
 
     // Game Logic
-    player.update();
+    player.update(map, tile_size);
 
     // Start Drawing
     BeginDrawing();
     ClearBackground(aqua);
 
+    drawMap(map, tile_size);
     drawEntity(player);
 
     EndDrawing();
@@ -45,3 +61,17 @@ int main(int argc, char *argv[]) {
 void drawEntity(Entity& ent) {
   DrawRectangle(ent.x, ent.y, ent.width, ent.height, ent.color);
 }
+
+void drawMap(std::vector<std::vector<char>>& map, int tile_size) {
+  for (int i = 0; i < map.size(); i++) {
+    for (int j = 0; j < map[0].size(); j++) {
+      if (map[i][j] > 0) {
+        DrawRectangle(j * tile_size, i * tile_size, tile_size, tile_size, black);
+      }
+    }
+  }
+}
+
+
+
+
